@@ -1,0 +1,87 @@
+'use strict';
+
+class Ability {
+  abbreviation: string;
+  name: string;
+
+  constructor(abbreviation: string, name: string) {
+    this.abbreviation = abbreviation;
+    this.name = name;
+    Object.seal(this);
+  }
+
+  toString() {
+    return this.abbreviation;
+  }
+
+  static STR: Ability;
+  static DEX: Ability;
+  static CON: Ability;
+  static INT: Ability;
+  static WIS: Ability;
+  static CHA: Ability;
+}
+Object.defineProperties(Ability, {
+  STR: { enumerable: true, value: new Ability('STR', 'Strength') },
+  DEX: { enumerable: true, value: new Ability('DEX', 'Dexterity') },
+  CON: { enumerable: true, value: new Ability('CON', 'Constitution') },
+  INT: { enumerable: true, value: new Ability('INT', 'Intelligence') },
+  WIS: { enumerable: true, value: new Ability('WIS', 'Wisdom') },
+  CHA: { enumerable: true, value: new Ability('CHA', 'Charisma') },
+  [Symbol.iterator]: { value: function*() {
+    yield Ability.STR;
+    yield Ability.DEX;
+    yield Ability.CON;
+    yield Ability.INT;
+    yield Ability.WIS;
+    yield Ability.CHA;
+  }}
+});
+
+enum BonusType {
+  
+}
+
+class AbilityScore {
+  score: number;
+
+  constructor(ability Ability, score: number) {
+    this.score = score;
+  }
+}
+
+interface Prerequisite {
+  toString(): string;
+  satisfies(Character):  boolean;
+}
+
+class MinimumAttributePrerequisite implements Prerequisite {
+  ability: Ability;
+  minimumScore: number;
+
+  constructor (ability: Ability, minimumScore: number) {
+    this.ability = ability;
+    this.minimumScore = minimumScore;
+  }
+
+  satisfies(character: Character) {
+    return false;
+  }
+}
+
+interface Feat {
+  prerequisites: Set<Prerequisite>;
+}
+
+class PowerAttack implements Feat {
+  prerequisites: Set<Prerequisite>;
+
+  constructor() {
+    this.prerequisites = new Set([
+      new MinimumAttributePrerequisite(Ability.STR, 13)
+    ]);
+  }
+}
+
+class Character {
+}
