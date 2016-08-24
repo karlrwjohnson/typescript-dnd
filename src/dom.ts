@@ -20,7 +20,7 @@ function isDomElementSpec (arg: DomFactoryParam): arg is DomElementSpec {
   return typeof arg === 'object';
 }
 
-function domFactoryFactory (elementName: string) {
+function domFactoryFactory <T extends HTMLElement> (elementName: string) {
   /**
    * Function which create DOM elements with corresponding tag names
    * and initializes them with certain properties
@@ -31,8 +31,8 @@ function domFactoryFactory (elementName: string) {
    *    * type is Function and name starts with "on" - Added as an event callback
    *    * Otherwise, assigned through setAttribute()
    */
-  return function domFactory (...args: DomFactoryParam[]): HTMLElement {
-    const element: HTMLElement = document.createElement(elementName);
+  return function domFactory (...args: DomFactoryParam[]): T {
+    const element: T = <T> document.createElement(elementName);
     for (let arg of args) {
       if (arg instanceof HTMLElement) {
         element.appendChild(arg);
@@ -72,44 +72,44 @@ function domFactoryFactory (elementName: string) {
   }
 }
 
-export const a        = domFactoryFactory('a');
-export const aside    = domFactoryFactory('aside');
-export const b        = domFactoryFactory('b');
-export const button   = domFactoryFactory('button');
-export const canvas   = domFactoryFactory('canvas');
-export const col      = domFactoryFactory('col');
-export const colgroup = domFactoryFactory('colgroup');
-export const div      = domFactoryFactory('div');
-export const form     = domFactoryFactory('form');
-export const h1       = domFactoryFactory('h1');
-export const h2       = domFactoryFactory('h2');
-export const h3       = domFactoryFactory('h3');
-export const h4       = domFactoryFactory('h4');
-export const h5       = domFactoryFactory('h5');
-export const h6       = domFactoryFactory('h6');
-export const h7       = domFactoryFactory('h7');
-export const header   = domFactoryFactory('header');
-export const hr       = domFactoryFactory('hr');
-export const i        = domFactoryFactory('i');
-export const img      = domFactoryFactory('img');
-export const input    = domFactoryFactory('input');
-export const li       = domFactoryFactory('li');
-export const main     = domFactoryFactory('main');
-export const nav      = domFactoryFactory('nav');
-export const ol       = domFactoryFactory('ol');
-export const option   = domFactoryFactory('option');
-export const p        = domFactoryFactory('p');
-export const select   = domFactoryFactory('select');
-export const span     = domFactoryFactory('span');
-export const table    = domFactoryFactory('table');
-export const tbody    = domFactoryFactory('tbody');
-export const td       = domFactoryFactory('td');
-export const textarea = domFactoryFactory('textarea');
-export const th       = domFactoryFactory('th');
-export const thead    = domFactoryFactory('thead');
-export const tfoot    = domFactoryFactory('tfoot');
-export const tr       = domFactoryFactory('tr');
-export const ul       = domFactoryFactory('ul');
+export const a        = domFactoryFactory<HTMLAnchorElement>          ('a');
+export const aside    = domFactoryFactory<HTMLElement>                ('aside');
+export const b        = domFactoryFactory<HTMLPhraseElement>          ('b');
+export const button   = domFactoryFactory<HTMLButtonElement>          ('button');
+export const canvas   = domFactoryFactory<HTMLCanvasElement>          ('canvas');
+export const col      = domFactoryFactory<HTMLTableColElement>        ('col');
+export const colgroup = domFactoryFactory<HTMLTableColElement>        ('colgroup');
+export const div      = domFactoryFactory<HTMLDivElement>             ('div');
+export const form     = domFactoryFactory<HTMLFormElement>            ('form');
+export const h1       = domFactoryFactory<HTMLHeadingElement>         ('h1');
+export const h2       = domFactoryFactory<HTMLHeadingElement>         ('h2');
+export const h3       = domFactoryFactory<HTMLHeadingElement>         ('h3');
+export const h4       = domFactoryFactory<HTMLHeadingElement>         ('h4');
+export const h5       = domFactoryFactory<HTMLHeadingElement>         ('h5');
+export const h6       = domFactoryFactory<HTMLHeadingElement>         ('h6');
+export const h7       = domFactoryFactory<HTMLHeadingElement>         ('h7');
+export const header   = domFactoryFactory<HTMLElement>                ('header');
+export const hr       = domFactoryFactory<HTMLHRElement>              ('hr');
+export const i        = domFactoryFactory<HTMLPhraseElement>          ('i');
+export const img      = domFactoryFactory<HTMLImageElement>           ('img');
+export const input    = domFactoryFactory<HTMLInputElement>           ('input');
+export const li       = domFactoryFactory<HTMLLIElement>              ('li');
+export const main     = domFactoryFactory<HTMLElement>                ('main');
+export const nav      = domFactoryFactory<HTMLElement>                ('nav');
+export const ol       = domFactoryFactory<HTMLOListElement>           ('ol');
+export const option   = domFactoryFactory<HTMLOptionElement>          ('option');
+export const p        = domFactoryFactory<HTMLParagraphElement>       ('p');
+export const select   = domFactoryFactory<HTMLSelectElement>          ('select');
+export const span     = domFactoryFactory<HTMLSpanElement>            ('span');
+export const table    = domFactoryFactory<HTMLTableElement>           ('table');
+export const tbody    = domFactoryFactory<HTMLTableSectionElement>    ('tbody');
+export const td       = domFactoryFactory<HTMLTableDataCellElement>   ('td');
+export const textarea = domFactoryFactory<HTMLTextAreaElement>        ('textarea');
+export const th       = domFactoryFactory<HTMLTableHeaderCellElement> ('th');
+export const thead    = domFactoryFactory<HTMLTableSectionElement>    ('thead');
+export const tfoot    = domFactoryFactory<HTMLTableSectionElement>    ('tfoot');
+export const tr       = domFactoryFactory<HTMLTableRowElement>        ('tr');
+export const ul       = domFactoryFactory<HTMLUListElement>           ('ul');
 
 /** Remove all children from a parent element **/
 export function removeChildren (element: HTMLElement) {

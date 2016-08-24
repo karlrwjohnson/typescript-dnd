@@ -18,6 +18,10 @@ class Tile {
 }
 
 class Map {
+  _width: number;
+  _height: number;
+  _tiles: Tile[][];
+
   constructor (width, height, tileSupplier?: (coordinate: Coordinate, map: Map) => Tile) {
     this._width = width;
     this._height = height;
@@ -33,9 +37,15 @@ class Map {
     );
   }
 
-  _width: number;
-  _height: number;
-  _tiles: Tile[][];
+  get width() { return this._width; }
+  get height() { return this._height; }
+  getTile(x: number, y: number) {
+    if (x >= 0 && y >= 0 && x < this._width && y < this._height) {
+      return this._tiles[y][x];
+    } else {
+      throw new Error(`Coordinate ${x},${y} is ouside map boundaries ${this._width}x${this._height}`);
+    }
+  }
 }
 
 class Character {}
@@ -72,16 +82,50 @@ const map = loadMapFromASCII(`
 ##########
 `);
 
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 600;
+
 class MapView {
+  _ctx: CanvasRenderingContext2D;
   _map: Map;
+  domElement: HTMLCanvasElement;
 
   constructor(map) {
     this.map = map;
+    this.domElement = dom.canvas({
+      width: CANVAS_WIDTH,
+      height: CANVAS_HEIGHT,
+      style: {
+        border: '1px solid #ccc',
+        boxShadow: '2px 2px 5px rgba(0,0,0,0.5)'
+      }
+    });
+    this._ctx = this.domElement.getContext('2d');
   }
 
   set map(map: Map) { this._map = map; }
-  get map() { return this._map; };
+  get map() { return this._map; }
+
+  render() {
+    const ctx = this._ctx;
+    const canvas = this.domElement;
+    const map = this.map;
+    const x_scale = canvas.width / map.width;
+    const y_scale = canvas.height / map.height;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let y = 0; y < map.height; y++) {
+      const cy = y_scale * y;
+      for (let x = 0; x < map.width; x++) {
+        const cx = x_scale * x;
+        if (map.getTile(x, y).type === WALL) {
+          ctx.fillRect(cx, cy, x_scale, y_scale);
+        }
+      }
+    }
+  }
 }
+
+
 
 /*
 const counter = dom.span('0');
@@ -113,15 +157,6 @@ document.body.appendChild(dom.div(
   dom.p('----->', button, '<----')
 ));*/
 
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
-const canvas = dom.canvas({
-  width: CANVAS_WIDTH,
-  height: CANVAS_HEIGHT,
-  style: {
-    border: '1px solid #ccc',
-    boxShadow: '2px 2px 5px rgba(0,0,0,0.5)'
-  }
-});
-
-document.body.appendChild(canvas);
+const view = new MapView(map);
+document.body.appendChild(view.domElement);
+view.render();

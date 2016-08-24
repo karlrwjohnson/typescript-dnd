@@ -67,7 +67,7 @@ function parseRangeArgs <T> (
 ): [number, number, RangeMapFn<T>] {
   let start: number;
   let end: number;
-  let fn: Function = undefined;
+  let fn: RangeMapFn<T> = undefined;
 
   // Process arguments
   if (typeof b === 'number') {
@@ -75,14 +75,14 @@ function parseRangeArgs <T> (
     end = b;
 
     if (typeof c === 'function') {
-      fn = c;
+      fn = <RangeMapFn<T>> c;
     }
   } else {
     start = 0;
     end = a;
 
     if (typeof c === 'function') {
-      fn = c;
+      fn = <RangeMapFn<T>> c;
     }
   }
 
